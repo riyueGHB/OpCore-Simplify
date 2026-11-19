@@ -304,7 +304,7 @@ class CompatibilityChecker:
             if device_id in set(pci_data.EthernetIDs) | set(pci_data.WirelessUSBIDs):
                 device_props["Compatibility"] = (max_version, min_version)
             elif device_id in pci_data.WirelessCardIDs:
-                if device_id in pci_data.AtherosWiFiIDs[:8]:
+                if device_id in pci_data.AtherosWiFiIDs[:8] or device_id in pci_data.rtw89WiFiIDs:
                     device_props["OCLP Compatibility"] = (
                         ocl_patched_max_version, ocl_patched_min_version)
                     self.ocl_patched_macos_version = (ocl_patched_max_version, self.ocl_patched_macos_version[-1] if self.ocl_patched_macos_version and self.utils.parse_darwin_version(
@@ -315,21 +315,6 @@ class CompatibilityChecker:
 
             print("{}- {}: {}".format(" "*3, device_name,
                   self.show_macos_compatibility(device_props.get("Compatibility"))))
-
-            if device_id in pci_data.WirelessCardIDs:
-                if device_id in pci_data.BroadcomWiFiIDs:
-                    print(
-                        "{}- Continuity Support: \033[1;32mFull\033[0m (AirDrop, Handoff, Universal Clipboard, Instant Hotspot,...)".format(" "*6))
-                elif device_id in pci_data.IntelWiFiIDs:
-                    print(
-                        "{}- Continuity Support: \033[1;33mPartial\033[0m (Handoff and Universal Clipboard with AirportItlwm)".format(" "*6))
-                    print(
-                        "{}\033[1;93mNote:\033[0m AirDrop, Universal Clipboard, Instant Hotspot,... not available".format(" "*6))
-                elif device_id in pci_data.AtherosWiFiIDs:
-                    print(
-                        "{}- Continuity Support: \033[1;31mLimited\033[0m (No Continuity features available)".format(" "*6))
-                    print(
-                        "{}\033[1;93mNote:\033[0m Atheros cards are not recommended for macOS".format(" "*6))
 
             if "OCLP Compatibility" in device_props:
                 print("{}- OCLP Compatibility: {}".format(" "*6,
